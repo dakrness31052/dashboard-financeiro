@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Financeiro Consolidação 2026 por Sede</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0f172a; color: #f8fafc; }
+    </style>
+</head>
+<body class="p-4 md:p-8 min-h-screen">
+    <div class="max-w-7xl mx-auto space-y-8">
+        
+        <!-- Header -->
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-center bg-slate-800/80 p-6 rounded-2xl border border-slate-700 backdrop-blur shadow-xl">
+            <div>
+                <span class="text-xs font-bold tracking-widest text-emerald-400 uppercase bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">Relatório Executivo Detalhado</span>
+                <h1 class="text-2xl md:text-4xl font-extrabold text-white mt-2">Painel Financeiro por Sede & Mês</h1>
+                <p class="text-slate-400 text-sm mt-1">Visão Consolidada e Detalhada: Água Verde, Portão, Sede 01 e Despesas dos Sócios</p>
+            </div>
+            <div class="mt-4 md:mt-0 flex items-center space-x-3 bg-slate-900/60 px-4 py-2 rounded-xl border border-slate-700">
+                <i class="fa-regular fa-calendar text-emerald-400"></i>
+                <span class="text-xs font-semibold text-slate-300">Maio a Agosto 2026</span>
+            </div>
+        </header>
+
+        <!-- KPI Cards Resumo -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-slate-800/60 border border-slate-700/80 rounded-2xl p-5 hover:border-slate-600 transition">
+                <div class="flex justify-between items-center text-slate-400 mb-2">
+                    <span class="text-xs font-semibold uppercase tracking-wider">Fat. Água Verde (Ago)</span>
+                    <i class="fa-solid fa-building text-blue-400"></i>
+                </div>
+                <div class="text-2xl font-bold text-white">R$ 147.672,50</div>
+                <span class="text-xs text-emerald-400 flex items-center mt-2 font-medium">
+                    <i class="fa-solid fa-arrow-trend-up mr-1"></i> +7.3% vs Maio
+                </span>
+            </div>
+
+            <div class="bg-slate-800/60 border border-slate-700/80 rounded-2xl p-5 hover:border-slate-600 transition">
+                <div class="flex justify-between items-center text-slate-400 mb-2">
+                    <span class="text-xs font-semibold uppercase tracking-wider">Fat. Portão (Ago)</span>
+                    <i class="fa-solid fa-store text-cyan-400"></i>
+                </div>
+                <div class="text-2xl font-bold text-white">R$ 140.131,02</div>
+                <span class="text-xs text-emerald-400 flex items-center mt-2 font-medium">
+                    <i class="fa-solid fa-arrow-trend-up mr-1"></i> +10.1% vs Maio
+                </span>
+            </div>
+
+            <div class="bg-slate-800/60 border border-slate-700/80 rounded-2xl p-5 hover:border-slate-600 transition">
+                <div class="flex justify-between items-center text-slate-400 mb-2">
+                    <span class="text-xs font-semibold uppercase tracking-wider">Var. Água Verde (Ago)</span>
+                    <i class="fa-solid fa-triangle-exclamation text-amber-400"></i>
+                </div>
+                <div class="text-2xl font-bold text-amber-400">R$ 52.939,34</div>
+                <span class="text-xs text-amber-400 flex items-center mt-2 font-medium">
+                    IPTU + Câmeras + Premiações
+                </span>
+            </div>
+
+            <div class="bg-slate-800/60 border border-slate-700/80 rounded-2xl p-5 hover:border-slate-600 transition">
+                <div class="flex justify-between items-center text-slate-400 mb-2">
+                    <span class="text-xs font-semibold uppercase tracking-wider">Var. Portão (Ago)</span>
+                    <i class="fa-solid fa-arrow-up-right-dots text-orange-400"></i>
+                </div>
+                <div class="text-2xl font-bold text-orange-400">R$ 55.769,44</div>
+                <span class="text-xs text-orange-400 flex items-center mt-2 font-medium">
+                    Manutenção Calhas + Presentes
+                </span>
+            </div>
+        </div>
+
+        <!-- Visualização por Sede Charts -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Chart 1: Comparativo por Sede - Faturamento -->
+            <div class="bg-slate-800/60 border border-slate-700/80 rounded-2xl p-6">
+                <h3 class="text-lg font-bold text-white mb-4 flex items-center">
+                    <i class="fa-solid fa-chart-column text-blue-400 mr-2"></i> Faturamento Mensal por Sede
+                </h3>
+                <div class="relative h-72">
+                    <canvas id="chartFatSede"></canvas>
+                </div>
+            </div>
+
+            <!-- Chart 2: Custos Variáveis por Sede -->
+            <div class="bg-slate-800/60 border border-slate-700/80 rounded-2xl p-6">
+                <h3 class="text-lg font-bold text-white mb-4 flex items-center">
+                    <i class="fa-solid fa-chart-line text-amber-400 mr-2"></i> Evolução das Despesas Variáveis por Sede
+                </h3>
+                <div class="relative h-72">
+                    <canvas id="chartVarSede"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabela Completa Detalhada por Sede -->
+        <div class="bg-slate-800/60 border border-slate-700/80 rounded-2xl p-6 overflow-hidden">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                <h3 class="text-lg font-bold text-white flex items-center">
+                    <i class="fa-solid fa-sitemap text-emerald-400 mr-2"></i> Detalhamento Completo Mês a Mês por Sede (R$)
+                </h3>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-700 text-slate-400 text-xs uppercase tracking-wider bg-slate-900/60">
+                            <th class="p-3">Mês</th>
+                            <th class="p-3">Sede</th>
+                            <th class="p-3">Faturamento</th>
+                            <th class="p-3">Gastos Fixos</th>
+                            <th class="p-3">Gastos Variáveis</th>
+                            <th class="p-3">Total Operacional Sede</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700/50">
+                        <!-- MAIO -->
+                        <tr class="bg-slate-800/40 hover:bg-slate-700/30">
+                            <td class="p-3 font-bold text-emerald-400" rowspan="3">Maio 2026</td>
+                            <td class="p-3 text-white font-medium"><i class="fa-solid fa-building text-blue-400 mr-1"></i> Água Verde</td>
+                            <td class="p-3 text-slate-300">R$ 137.568,30</td>
+                            <td class="p-3 text-slate-300">R$ 75.677,61</td>
+                            <td class="p-3 text-slate-300">R$ 44.209,41</td>
+                            <td class="p-3 text-slate-200 font-semibold">R$ 119.887,02</td>
+                        </tr>
+                        <tr class="bg-slate-800/40 hover:bg-slate-700/30">
+                            <td class="p-3 text-white font-medium"><i class="fa-solid fa-store text-cyan-400 mr-1"></i> Portão</td>
+                            <td class="p-3 text-slate-300">R$ 127.257,08</td>
+                            <td class="p-3 text-slate-300">R$ 70.143,32</td>
+                            <td class="p-3 text-slate-300">R$ 43.628,13</td>
+                            <td class="p-3 text-slate-200 font-semibold">R$ 113.771,45</td>
+                        </tr>
+                        <tr class="bg-slate-800/40 hover:bg-slate-700/30 border-b-2 border-slate-700">
+                            <td class="p-3 text-white font-medium"><i class="fa-solid fa-umbrella-beach text-teal-400 mr-1"></i> Sede 01 (Praia)</td>
+                            <td class="p-3 text-slate-300">R$ 10.217,25</td>
+                            <td class="p-3 text-slate-300">R$ 7.926,19</td>
+                            <td class="p-3 text-slate-400">R$ 0,00</td>
+                            <td class="p-3 text-slate-200 font-semibold">R$ 7.926,19</td>
+                        </tr>
+
+                        <!-- JUNHO -->
+                        <tr class="bg-slate-800/20 hover:bg-slate-700/30">
+                            <td class="p-3 font-bold text-emerald-400" rowspan="3">Junho 2026</td>
+                            <td class="p-3 text-white font-medium"><i class="fa-solid fa-building text-blue-400 mr-1"></i> Água Verde</td>
+                            <td class="p-3 text-slate-300">R$ 147.369,33</td>
+                            <td class="p-3 text-slate-300">R$ 68.500,00</td>
+                            <td class="p-3 text-slate-300">R$ 44.100,00</td>
+                            <td class="p-3 text-slate-200 font-semibold">R$ 112.600,00</td>
+                        </tr>
+                        <tr class="bg-slate-800/20 hover:bg-slate-700/30">
+                            <td class="p-3 text-white font-medium"><i class="fa-solid fa-store text-cyan-400 mr-1"></i> Portão</td>
+                            <td class="p-3 text-slate-300">R$ 139.771,35</td>
+                            <td class="p-3 text-slate-300">R$ 62.581,66</td>
+                            <td class="p-3 text-slate-300">R$ 47.710,65</td>
+                            <td class="p-3 text-slate-200 font-semibold">R$ 110.292,31</td>
+                        </tr>
+                        <tr class="bg-slate-800/20 hover:bg-slate-700/30 border-b-2 border-slate-700">
+                            <td class="p-3 text-white font-medium"><i class="fa-solid fa-umbrella-beach text-teal-400 mr-1"></i> Sede 01 (Praia)</td>
+                            <td class="p-3 text-slate-300">R$ 10.217,25</td>
+                            <td class="p-3 text-slate-300">R$ 8.038,62</td>
+                            <td class="p-3 text-slate-400">R$ 0,00</td>
+                            <td class="p-3 text-slate-200 font-semibold">R$ 8.038,62</td>
+                        </tr>
+
+                        <!-- JULHO -->
+                        <tr class="bg-slate-800/40 hover:bg-slate-700/30">
+                            <td class="p-3 font-bold text-amber-400" rowspan="3">Julho 2026<br><span class="text-[10px] text-amber-300 font-normal">(Efeito 13º)</span></td>
+                            <td class="p-3 text-white font-medium"><i class="fa-solid fa-building text-blue-400 mr-1"></i> Água Verde</td>
+                            <td class="p-3 text-slate-300">R$ 147.369,33</td>
+                            <td class="p-3 text-amber-300 font-semibold">R$ 101.760,48</td>
+                            <td class="p-3 text-slate-300">R$ 43.837,75</td>
+                            <td class="p-3 text-slate-200 font-semibold">R$ 145.598,23</td>
+                        </tr>
+                        <tr class="bg-slate-800/40 hover:bg-slate-700/30">
+                            <td class="p-3 text-white font-medium"><i class="fa-solid fa-store text-cyan-400 mr-1"></i> Portão</td>
+                            <td class="p-3 text-slate-300">R$ 139.771,35</td>
+                            <td class="p-3 text-slate-300">R$ 69.100,00</td>
+                            <td class="p-3 text-slate-300">R$ 49.906,12</td>
+                            <td class="p-3 text-slate-200 font-semibold">R$ 119.006,12</td>
+                        </tr>
+                        <tr class="bg-slate-800/40 hover:bg-slate-700/30 border-b-2 border-slate-700">
+                            <td class="p-3 text-white font-medium"><i class="fa-solid fa-umbrella-beach text-teal-400 mr-1"></i> Sede 01 (Praia)</td>
+                            <td class="p-3 text-slate-300">R$ 10.217,25</td>
+                            <td class="p-3 text-slate-300">R$ 8.038,62</td>
+                            <td class="p-3 text-slate-400">R$ 0,00</td>
+                            <td class="p-3 text-slate-200 font-semibold">R$ 8.038,62</td>
+                        </tr>
+
+                        <!-- AGOSTO -->
+                        <tr class="bg-slate-800/20 hover:bg-slate-700/30">
+                            <td class="p-3 font-bold text-emerald-400" rowspan="3">Agosto 2026</td>
+                            <td class="p-3 text-white font-medium"><i class="fa-solid fa-building text-blue-400 mr-1"></i> Água Verde</td>
+                            <td class="p-3 text-slate-300">R$ 147.672,50</td>
+                            <td class="p-3 text-slate-300">R$ 67.403,49</td>
+                            <td class="p-3 text-amber-300 font-semibold">R$ 52.939,34</td>
+                            <td class="p-3 text-slate-200 font-semibold">R$ 120.342,83</td>
+                        </tr>
+                        <tr class="bg-slate-800/20 hover:bg-slate-700/30">
+                            <td class="p-3 text-white font-medium"><i class="fa-solid fa-store text-cyan-400 mr-1"></i> Portão</td>
+                            <td class="p-3 text-slate-300">R$ 140.131,02</td>
+                            <td class="p-3 text-slate-300">R$ 80.714,38</td>
+                            <td class="p-3 text-orange-300 font-semibold">R$ 55.769,44</td>
+                            <td class="p-3 text-slate-200 font-semibold">R$ 136.483,82</td>
+                        </tr>
+                        <tr class="bg-slate-800/20 hover:bg-slate-700/30">
+                            <td class="p-3 text-white font-medium"><i class="fa-solid fa-umbrella-beach text-teal-400 mr-1"></i> Sede 01 (Praia)</td>
+                            <td class="p-3 text-slate-300">R$ 10.217,25</td>
+                            <td class="p-3 text-slate-300">R$ 8.035,33</td>
+                            <td class="p-3 text-slate-400">R$ 0,00</td>
+                            <td class="p-3 text-slate-200 font-semibold">R$ 8.035,33</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Painel Sócios -->
+        <div class="bg-slate-800/60 border border-slate-700/80 rounded-2xl p-6">
+            <h3 class="text-lg font-bold text-white mb-4 flex items-center">
+                <i class="fa-solid fa-user-gear text-purple-400 mr-2"></i> Evolução das Despesas Pessoais dos Sócios (Marlon & Dani)
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="relative h-64">
+                    <canvas id="chartSocios"></canvas>
+                </div>
+                <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-700/50 space-y-3 text-xs text-slate-300">
+                    <div class="font-bold text-sm text-purple-300 border-b border-slate-700 pb-2">Impacto das Retiradas no Lucro:</div>
+                    <p><strong class="text-white">Maio:</strong> Marlon (R$ 25.170,09) + Dani (R$ 28.246,72) = <span class="text-emerald-400 font-bold">R$ 53.416,81</span></p>
+                    <p><strong class="text-white">Junho:</strong> Marlon + Dani = <span class="text-emerald-400 font-bold">R$ 58.716,86</span></p>
+                    <p><strong class="text-white">Julho:</strong> Marlon (R$ 31.760,85) + Dani (R$ 33.955,86) = <span class="text-amber-400 font-bold">R$ 65.716,71</span></p>
+                    <p><strong class="text-white">Agosto:</strong> Marlon (R$ 36.487,19) + Dani (R$ 33.861,51) = <span class="text-purple-400 font-bold">R$ 70.348,70</span></p>
+                    <div class="pt-2 border-t border-slate-700 text-amber-300 font-semibold">
+                        ⚠️ Aumento de R$ 16.931,89/mês nas contas dos sócios em agosto comparado a maio.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const months = ['Maio', 'Junho', 'Julho', 'Agosto'];
+
+        // Faturamento por Sede Chart
+        new Chart(document.getElementById('chartFatSede'), {
+            type: 'bar',
+            data: {
+                labels: months,
+                datasets: [
+                    { label: 'Água Verde', data: [137568.30, 147369.33, 147369.33, 147672.50], backgroundColor: '#3b82f6', borderRadius: 4 },
+                    { label: 'Portão', data: [127257.08, 139771.35, 139771.35, 140131.02], backgroundColor: '#06b6d4', borderRadius: 4 },
+                    { label: 'Sede 01 (Praia)', data: [10217.25, 10217.25, 10217.25, 10217.25], backgroundColor: '#14b8a6', borderRadius: 4 }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { labels: { color: '#94a3b8' } } },
+                scales: {
+                    x: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } },
+                    y: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } }
+                }
+            }
+        });
+
+        // Variáveis por Sede Chart
+        new Chart(document.getElementById('chartVarSede'), {
+            type: 'line',
+            data: {
+                labels: months,
+                datasets: [
+                    { label: 'Água Verde Variável', data: [44209.41, 44100.00, 43837.75, 52939.34], borderColor: '#f59e0b', backgroundColor: '#f59e0b', tension: 0.3, borderWidth: 3 },
+                    { label: 'Portão Variável', data: [43628.13, 47710.65, 49906.12, 55769.44], borderColor: '#ea580c', backgroundColor: '#ea580c', tension: 0.3, borderWidth: 3 }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { labels: { color: '#94a3b8' } } },
+                scales: {
+                    x: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } },
+                    y: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } }
+                }
+            }
+        });
+
+        // Sócios Chart
+        new Chart(document.getElementById('chartSocios'), {
+            type: 'bar',
+            data: {
+                labels: months,
+                datasets: [
+                    { label: 'Marlon', data: [25170.09, 28000.00, 31760.85, 36487.19], backgroundColor: '#a855f7', borderRadius: 4 },
+                    { label: 'Dani', data: [28246.72, 30716.86, 33955.86, 33861.51], backgroundColor: '#ec4899', borderRadius: 4 }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { labels: { color: '#94a3b8' } } },
+                scales: {
+                    x: { stacked: true, ticks: { color: '#94a3b8' }, grid: { color: '#334155' } },
+                    y: { stacked: true, ticks: { color: '#94a3b8' }, grid: { color: '#334155' } }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
